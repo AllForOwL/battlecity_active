@@ -1,8 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>statistic/tank.png</file>
-        <file>statistic/countLife.png</file>
-        <file>statistic/level.png</file>
-        <file>statistic/tankCountLife.png</file>
-    </qresource>
-</RCC>
