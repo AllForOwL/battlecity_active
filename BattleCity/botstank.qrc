@@ -1,0 +1,32 @@
+<RCC>
+    <qresource prefix="/easyTanks">
+        <file>Tanks/tankBots/easyTank/down_1.png</file>
+        <file>Tanks/tankBots/easyTank/down_2.png</file>
+        <file>Tanks/tankBots/easyTank/left_1.png</file>
+        <file>Tanks/tankBots/easyTank/left_2.png</file>
+        <file>Tanks/tankBots/easyTank/right_1.png</file>
+        <file>Tanks/tankBots/easyTank/right_2.png</file>
+        <file>Tanks/tankBots/easyTank/up_1.png</file>
+        <file>Tanks/tankBots/easyTank/up_2.png</file>
+    </qresource>
+    <qresource prefix="/middleTanks">
+        <file>Tanks/tankBots/middleTank/down_1.png</file>
+        <file>Tanks/tankBots/middleTank/down_2.png</file>
+        <file>Tanks/tankBots/middleTank/left_1.png</file>
+        <file>Tanks/tankBots/middleTank/left_2.png</file>
+        <file>Tanks/tankBots/middleTank/right_1.png</file>
+        <file>Tanks/tankBots/middleTank/right_2.png</file>
+        <file>Tanks/tankBots/middleTank/up_1.png</file>
+        <file>Tanks/tankBots/middleTank/up_2.png</file>
+    </qresource>
+    <qresource prefix="/highTanks">
+        <file>Tanks/tankBots/highTank/down_1.png</file>
+        <file>Tanks/tankBots/highTank/down_2.png</file>
+        <file>Tanks/tankBots/highTank/left_1.png</file>
+        <file>Tanks/tankBots/highTank/left_2.png</file>
+        <file>Tanks/tankBots/highTank/right_1.png</file>
+        <file>Tanks/tankBots/highTank/right_2.png</file>
+        <file>Tanks/tankBots/highTank/up_1.png</file>
+        <file>Tanks/tankBots/highTank/up_2.png</file>
+    </qresource>
+</RCC>
