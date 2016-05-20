@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Tanks/tankPlayer/tank_Yellow_down_1.png</file>
+        <file>Tanks/tankPlayer/tank_Yellow_down_2.png</file>
+        <file>Tanks/tankPlayer/tank_Yellow_left_1.png</file>
+        <file>Tanks/tankPlayer/tank_Yellow_left_2.png</file>
+        <file>Tanks/tankPlayer/tank_Yellow_right_1.png</file>
+        <file>Tanks/tankPlayer/tank_Yellow_right_2.png</file>
+        <file>Tanks/tankPlayer/tank_Yellow_up_1.png</file>
+        <file>Tanks/tankPlayer/tank_Yellow_up_2.png</file>
+    </qresource>
+</RCC>
