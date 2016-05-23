@@ -1,5 +1,8 @@
 <RCC>
     <qresource prefix="/">
-        <file>log_parsing.txt</file>
+        <file>map/level_1.txt</file>
+        <file>map/level_2.txt</file>
+        <file>map/level_3.txt</file>
+        <file>map/level_4.txt</file>
     </qresource>
 </RCC>

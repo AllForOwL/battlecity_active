@@ -25,7 +25,7 @@ BattleCityMap::BattleCityMap(int regimeGame, bool _friend, UdpClient* client, QO
     _deleteBase = false;
 
     p_ReadFromFile = new Parsing();
-    p_ReadFromFile->ParsTextFile(":/log_parsing.txt", n_Map, false);   // Завантаження карти з файлу
+    p_ReadFromFile->ParsTextFile(":/map/level_4.txt", n_Map, false);   // Завантаження карти з файлу
 
     m_listFileNamesEasyBots
             << ":/easyTanks/Tanks/tankBots/easyTank/down_1.png"
@@ -357,6 +357,7 @@ BattleCityMap::BattleCityMap(int regimeGame, bool _friend, UdpClient* client, QO
     QObject::connect( timerRemoveExplosionBonus  , SIGNAL( timeout()                ), SLOT( slotRemoveExplosionBonusTimer() ));
 
     QObject::connect( TankForPlay1, SIGNAL( signalTankTookStar() ), this, SLOT( slotRemoveBonus() ));   // Піднімання бонусів танком
+
 
 
     QObject::connect( TankForPlay1, SIGNAL( signalKillTank()     ), this, SLOT( slotKillTank()    ));   // 3 убийствах танка
@@ -945,6 +946,7 @@ void BattleCityMap::slotAddBot_4()
 
 void BattleCityMap::slotAddBot_1()
 {
+
     emit signalKillBotForStatistic();
 
     ++bot->numberDeaths;

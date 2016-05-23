@@ -286,8 +286,6 @@ void TankBot::Atack()
         break;
     }
 
-
-
     emit slotMoveTank();
     emit slotTankShot(this->objectName());
 }
