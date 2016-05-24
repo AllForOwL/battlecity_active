@@ -30,7 +30,7 @@ BattleCityView::BattleCityView(int regimeGame, bool _friend, UdpClient *client):
     ShowWalls(OBJ_NAME_RED_WALL  , OBJ_TYPE_RED_WALL  , ":/walls/3.jpg");
     ShowWalls(OBJ_NAME_GRASS     , OBJ_TYPE_GRASS     , ":/walls/4.png");
     ShowWalls(OBJ_NAME_WHITE_WALL, OBJ_TYPE_WHITE_WALL, ":/walls/5.jpg");
-   // ShowWalls(OBJ_NAME_BASE      , OBJ_TYPE_BASE      , ":/Explosion/base.png");
+    ShowWalls(OBJ_NAME_BASE      , OBJ_TYPE_BASE      , ":/Explosion/base.png");
     ShowStatistic();
 
     QObject::connect(map, SIGNAL(signalGameOver(int,int)), this, SLOT(slotClose(int,int)));
@@ -120,22 +120,30 @@ void BattleCityView::ShowStatistic()
     int x;
     int y = 78;
 
-    for (int j(0); j < 3; j++)
+    x = 496;
+    y += 22;
+    for (int i(0); i < 3; i++)
     {
-        x = 496;
-        y += 22;
-        for (int i(0); i < 3; i++)
-        {
-            x += 28;
-            QGraphicsPixmapItem* imageTank = new QGraphicsPixmapItem();
-            imageTank->setPixmap(QPixmap(":/statistic/tank.png"));
-            imageTank->setPos(x, y);
-            imageTank->setData(0, "tankStatistic");
-            imageTank->setZValue(1.0);
-            listTank.append(imageTank);
-            map->addItem(imageTank);
-        }
+        x += 28;
+        QGraphicsPixmapItem* imageTank = new QGraphicsPixmapItem();
+        imageTank->setPixmap(QPixmap(":/statistic/tank.png"));
+        imageTank->setPos(x, y);
+        imageTank->setData(0, "tankStatistic");
+        imageTank->setZValue(1.0);
+        listTank.append(imageTank);
+        map->addItem(imageTank);
     }
+
+
+    x = 524;
+    y += 22;
+    QGraphicsPixmapItem* imageTank = new QGraphicsPixmapItem();
+    imageTank->setPixmap(QPixmap(":/statistic/tank.png"));
+    imageTank->setPos(x, y);
+    imageTank->setData(0, "tankStatistic");
+    imageTank->setZValue(1.0);
+    listTank.append(imageTank);
+    map->addItem(imageTank);
 
     QGraphicsPixmapItem* level = new QGraphicsPixmapItem();
     level->setPixmap(QPixmap(":/statistic/level.png"));
@@ -528,12 +536,14 @@ void BattleCityView::slotLoadNextLevel()
          map->bot_4->algorithmSearchWay->SetPathToMap(":/map/level_4.txt");
     }
 
+    ++map->m_iCountLevel;
+
     ShowWalls(OBJ_NAME_WATER     , OBJ_TYPE_WATER     , ":/walls/1.jpg");
     ShowWalls(OBJ_NAME_ICE       , OBJ_TYPE_ICE       , ":/walls/2.jpg");
     ShowWalls(OBJ_NAME_RED_WALL  , OBJ_TYPE_RED_WALL  , ":/walls/3.jpg");
     ShowWalls(OBJ_NAME_GRASS     , OBJ_TYPE_GRASS     , ":/walls/4.png");
     ShowWalls(OBJ_NAME_WHITE_WALL, OBJ_TYPE_WHITE_WALL, ":/walls/5.jpg");
-   // ShowWalls(OBJ_NAME_BASE      , OBJ_TYPE_BASE      , ":/Explosion/base.png");
+    ShowWalls(OBJ_NAME_BASE      , OBJ_TYPE_BASE      , ":/Explosion/base.png");
     ShowStatistic();
 
     ++map->bot->m_iCountLevel;

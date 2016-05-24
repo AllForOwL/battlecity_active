@@ -596,7 +596,7 @@ void BattleCityMap::slotLoadLevel()
     runThreeBot = false;
     runFourBot  = false;
 
-    CNT_SPEED_MOVE_BOTS -= 10;
+    CNT_SPEED_MOVE_BOTS -= 7;
 
     TankForPlay1->setPos(CNT_BEGIN_X_ONE_PLAYER, CNT_BEGIN_Y_ONE_PLAYER);
     timerMoveTank1->start(CNT_SPEED_MOVE_ONE_PLAYER);
@@ -1189,7 +1189,7 @@ void BattleCityMap::slotAddBot_1()
              }
     }
 
-    if (bot->numberDeaths == f_icountLifeBot /*&& m_iCountDeath == f_icountDeathForNextLevel*/)
+    if (bot->numberDeaths == f_icountLifeBot && m_iCountDeath == f_icountDeathForNextLevel)
     {
         timerMoveTank1->stop();
 
