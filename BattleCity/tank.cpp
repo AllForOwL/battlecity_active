@@ -17,6 +17,7 @@ Tank::Tank(const QList<QString> fileNames, QObject *parent) : QObject(parent),
     collision    = false;
     _friendOrBattle = false;
     _searchWayNow = false;
+    m_iCountLevel = 1;
 
     int size = fileNames.size();
     for (int i = 0; i < size; ++i) {
@@ -132,7 +133,14 @@ Bullet *Tank::shot() {
         }
     }
 
-    return (new Bullet(this->_power, pointStart, _rotate));
+    //if (this->m_iCountLevel == 1)
+    //{
+        return (new Bullet(this->_power, pointStart, _rotate));
+    //}
+    //else
+    //{
+     //   return (new Bullet(this->_power, pointStart, m_iCountLevel,_rotate));
+    //}
 }
 
 void Tank::slotTankShot(QString typeObject) {
@@ -208,9 +216,9 @@ void Tank::slotMoveTank() {
     np.setY(0);
 
     _speed = 2;                                   // Швидкість по замовчуванню
-    QGraphicsItem *obstacleWithIce = itemCollidesWith(this);
-    if (obstacleWithIce->data(0) == OBJ_NAME_ICE)           // Якщо танк їде по льоду,
-        this->_speed = 2;                                   // тоді він має "сковзатися"
+   // QGraphicsItem *obstacleWithIce = itemCollidesWith(this);
+   // if (obstacleWithIce->data(0) == OBJ_NAME_ICE)           // Якщо танк їде по льоду,
+    //    this->_speed = 2;                                   // тоді він має "сковзатися"
 
     qDebug() << "lastKey = " << lastKey;
     if (lastKey == this->iArrowUp)
@@ -304,15 +312,4 @@ void Tank::slotMoveTank() {
         }
     }
     scene()->update();
-}
-
-QGraphicsItem *Tank::itemCollidesWith(QGraphicsItem *item) {
-    QList<QGraphicsItem *> collisions = scene()->collidingItems(item);
-    foreach (QGraphicsItem *it, collisions) {
-        if (it == item)
-            continue;
-        return it;
-    }
-
-    return NULL;
 }

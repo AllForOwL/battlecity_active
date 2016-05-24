@@ -13,7 +13,20 @@ Bullet::Bullet(int tempPowerTank, QPointF start, int angle, QObject *parent):  Q
                                                             QGraphicsItem()
 {
     powerTank = tempPowerTank;
-    _speed = -1;                                                    // Швидкість руху пулі
+    _speed = -2;                                                    // Швидкість руху пулі
+    this->setRotation(angle);                                       // Сторона польоту
+    this->setPos(start);                                            // Початкова позиції пулі
+    timerBullet = new QTimer();
+    connect(timerBullet, SIGNAL(timeout()), SLOT(slotTimerBullet()));   // Таймер, який переміщує пулю
+    timerBullet->start(1);                                         // Швидкість обновлення таймеру. 15 млсек.
+                                                                    // 1 сек == 1000 млсек
+}
+
+Bullet::Bullet(int tempPowerTank, QPointF start, int angle, int speed, QObject *parent):  QObject(parent),
+                                                            QGraphicsItem()
+{
+    powerTank = tempPowerTank;
+    _speed = speed * (-1);                                                    // Швидкість руху пулі
     this->setRotation(angle);                                       // Сторона польоту
     this->setPos(start);                                            // Початкова позиції пулі
     timerBullet = new QTimer();
@@ -25,6 +38,11 @@ Bullet::Bullet(int tempPowerTank, QPointF start, int angle, QObject *parent):  Q
 Bullet::~Bullet() {
     emit signalDestroy();
     delete timerBullet;
+}
+
+void Bullet::SetSpeed(const int &speed)
+{
+    _speed = speed;
 }
 
 QRectF Bullet::boundingRect() const {                               // Повертаємо прямокутник(квадрат) пулі, для того, щоб

@@ -47,6 +47,8 @@ public:
     int bad_x;
     int bad_y;
 
+    int m_iCountLevel;
+
 protected:
     struct Frame {
         QPixmap pixmap;

@@ -482,16 +482,20 @@ void BattleCityView::slotLoadNextLevel()
 {   
     map->timerShowNextLevel->stop();
 
-    QList<QGraphicsItem *> topLevels;
     foreach (QGraphicsItem *item, map->items()) {
-        if (!item->parentItem() && item != map->bot && item != map->bot_2 && item != map->bot_3 && item != map->bot_4
-                && item != map->TankForPlay1)
+        if (!item->parentItem() //&& item != map->bot && item != map->bot_2 && item != map->bot_3 && item != map->bot_4
+                /*&& item != map->TankForPlay1*/)
             map->removeItem(item);
     }
 
     if (map->m_iCountLevel == 1)
     {
          map->p_ReadFromFile->ParsTextFile(":/map/level_2.txt", map->n_Map, false);   // Завантаження карти з файлу
+         map->bot->algorithmSearchWay->SetPathToMap(":/map/level_2.txt");
+         map->bot_2->algorithmSearchWay->SetPathToMap(":/map/level_2.txt");
+         map->bot_3->algorithmSearchWay->SetPathToMap(":/map/level_2.txt");
+         map->bot_4->algorithmSearchWay->SetPathToMap(":/map/level_2.txt");
+
          map->bot->algorithmSearchWay->SetPathToMap(":/map/level_2.txt");
          map->bot_2->algorithmSearchWay->SetPathToMap(":/map/level_2.txt");
          map->bot_3->algorithmSearchWay->SetPathToMap(":/map/level_2.txt");
@@ -504,17 +508,25 @@ void BattleCityView::slotLoadNextLevel()
          map->bot_2->algorithmSearchWay->SetPathToMap(":/map/level_3.txt");
          map->bot_3->algorithmSearchWay->SetPathToMap(":/map/level_3.txt");
          map->bot_4->algorithmSearchWay->SetPathToMap(":/map/level_3.txt");
-    }
-    else if (map->m_iCountLevel == 3)
-    {
-         map->p_ReadFromFile->ParsTextFile(":/map/level_4.txt", map->n_Map, false);   // Завантаження карти з файлу
+
          map->bot->algorithmSearchWay->SetPathToMap(":/map/level_3.txt");
          map->bot_2->algorithmSearchWay->SetPathToMap(":/map/level_3.txt");
          map->bot_3->algorithmSearchWay->SetPathToMap(":/map/level_3.txt");
          map->bot_4->algorithmSearchWay->SetPathToMap(":/map/level_3.txt");
     }
+    else if (map->m_iCountLevel == 3)
+    {
+         map->p_ReadFromFile->ParsTextFile(":/map/level_4.txt", map->n_Map, false);   // Завантаження карти з файлу
+         map->bot->algorithmSearchWay->SetPathToMap(":/map/level_4.txt");
+         map->bot_2->algorithmSearchWay->SetPathToMap(":/map/level_4.txt");
+         map->bot_3->algorithmSearchWay->SetPathToMap(":/map/level_4.txt");
+         map->bot_4->algorithmSearchWay->SetPathToMap(":/map/level_4.txt");
 
-    ++map->m_iCountLevel;
+         map->bot->algorithmSearchWay->SetPathToMap(":/map/level_4.txt");
+         map->bot_2->algorithmSearchWay->SetPathToMap(":/map/level_4.txt");
+         map->bot_3->algorithmSearchWay->SetPathToMap(":/map/level_4.txt");
+         map->bot_4->algorithmSearchWay->SetPathToMap(":/map/level_4.txt");
+    }
 
     ShowWalls(OBJ_NAME_WATER     , OBJ_TYPE_WATER     , ":/walls/1.jpg");
     ShowWalls(OBJ_NAME_ICE       , OBJ_TYPE_ICE       , ":/walls/2.jpg");
@@ -524,16 +536,10 @@ void BattleCityView::slotLoadNextLevel()
    // ShowWalls(OBJ_NAME_BASE      , OBJ_TYPE_BASE      , ":/Explosion/base.png");
     ShowStatistic();
 
+    ++map->bot->m_iCountLevel;
+    ++map->bot_2->m_iCountLevel;
+    ++map->bot_3->m_iCountLevel;
+    ++map->bot_4->m_iCountLevel;
 
-   // map->timerRunBot->start(CNT_TIME_APPEARANCE_ONE_BOT);
-   // map->timerRunBot_2->start(CNT_TIME_APPEARANCE_TWO_BOT);
-   // map->timerRunBot_3->start(CNT_TIME_APPEARANCE_THREE_BOT);
-   // map->timerRunBot_4->start(CNT_TIME_APPEARANCE_FOUR_BOT);
-  //  map->bot->numberDeaths = 0;
-  //  map->bot_2->numberDeaths = 0;
-  //  map->bot_3->numberDeaths = 0;
-  //  map->bot_4->numberDeaths = 0;
-
-    //this->update();
-
+    emit map->signalShowLevel();
 }

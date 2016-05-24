@@ -170,7 +170,7 @@ bool algorithmLI::SearchWay(int x, int y, int end_x, int end_y)
 
 bool algorithmLI::AuditSearchWay(int x_begin, int y_begin, int x_end, int y_end)
 {
-    p_ReadFromFile->ParsTextFile(":/map/level_1.txt", n_map, true);   // Завантаження карти з файлу
+    p_ReadFromFile->ParsTextFile(PATH_TO_MAP_FOR_LEVEL, n_map, true);   // Завантаження карти з файлу
 
     if (SearchWay(x_begin, y_begin, x_end, y_end))
     {

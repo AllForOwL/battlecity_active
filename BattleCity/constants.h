@@ -80,7 +80,7 @@ const int CNT_BEGIN_X_FOUR_BOT  = 50;
 const int CNT_BEGIN_Y_FOUR_BOT  = 0;
 
 const int CNT_SPEED_MOVE_ONE_PLAYER = 40;
-const int CNT_SPEED_MOVE_BOTS       = 40;
+
 
 const int CNT_CHANGE_SPEED_BOTS     = 10000;
 

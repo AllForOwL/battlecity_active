@@ -12,7 +12,10 @@ class Bullet : public QObject, public QGraphicsItem
     Q_OBJECT
 public:
     explicit Bullet(int tempPowerTank, QPointF start, int angle, QObject *parent = 0);
+    explicit Bullet(int tempPowerTank, QPointF start, int angle, int speed, QObject *parent = 0);
     ~Bullet();
+
+    void SetSpeed(const int& speed);
 
 protected:
     QRectF boundingRect() const;

@@ -27,6 +27,8 @@ public:
 
     bool AuditPressKey(int key);
 
+    int CNT_SPEED_MOVE_BOTS;
+
     int m_iCountDeath;
     int m_iCountLevel;
 
@@ -138,6 +140,8 @@ signals:
 
     void signalKillTankForStatistic();
 
+    void signalShowLevel();
+
 public slots:
     void slotAddBot_1 ();           // появление бота на карте после уничтожения
     void slotAddBot_2 ();
@@ -174,6 +178,8 @@ public slots:
     void slotShotTank(QString str);
 
     void slotKillTank();
+
+    void slotLoadLevel();
 };
 
 #endif // BATTLECITYMAP_H

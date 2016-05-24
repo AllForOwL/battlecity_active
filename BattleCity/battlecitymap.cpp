@@ -24,6 +24,8 @@ BattleCityMap::BattleCityMap(int regimeGame, bool _friend, UdpClient* client, QO
     timerForSendPosPlayer = new QTimer(this);
     shot = false;
 
+    CNT_SPEED_MOVE_BOTS = 40;
+
     _regimeGame = regimeGame;
     _increaseSpeedBots = CNT_SPEED_MOVE_BOTS;
     _deleteBase = false;
@@ -364,8 +366,6 @@ BattleCityMap::BattleCityMap(int regimeGame, bool _friend, UdpClient* client, QO
 
     QObject::connect( TankForPlay1, SIGNAL( signalTankTookStar() ), this, SLOT( slotRemoveBonus() ));   // Піднімання бонусів танком
 
-
-
     QObject::connect( TankForPlay1, SIGNAL( signalKillTank()     ), this, SLOT( slotKillTank()    ));   // 3 убийствах танка
 
     QObject::connect( TankForPlay1, SIGNAL( signalGameOver()     ), this, SLOT( slotGameOver()    ));   // 3 убийствах танка
@@ -374,6 +374,8 @@ BattleCityMap::BattleCityMap(int regimeGame, bool _friend, UdpClient* client, QO
     QObject::connect( bot_2       , SIGNAL( signalGameOver2()    ), this, SLOT( slotGameOver()    ));   // уничтожение базы
     QObject::connect( bot_3       , SIGNAL( signalGameOver2()    ), this, SLOT( slotGameOver()    ));   // уничтожение базы
     QObject::connect( bot_4       , SIGNAL( signalGameOver2()    ), this, SLOT( slotGameOver()    ));   // уничтожение базы
+
+    QObject::connect( this, SIGNAL(signalShowLevel()), this, SLOT(slotLoadLevel()));
 
    // QObject::connect( timerShowNextLevel, SIGNAL(timeout()), this, SLOT(slotLoadNextLevel()));
 
@@ -414,7 +416,6 @@ BattleCityMap::~BattleCityMap() {
     delete timerRemoveProtectionBase;
     delete timerRemoveStar;
     delete timerRemoveTimerBonus;
-
 }
 
 void BattleCityMap::StopGameForSwitchNewLevel()
@@ -529,6 +530,78 @@ void BattleCityMap::slotShotTank(QString str)
 void BattleCityMap::slotKillTank()
 {
     emit signalKillTankForStatistic();
+}
+
+void BattleCityMap::slotLoadLevel()
+{
+    timerRunBot->start(CNT_TIME_APPEARANCE_ONE_BOT);
+    timerRunBot->setObjectName(OBJ_NAME_BOT_1);
+
+    timerRunBot_2->start(CNT_TIME_APPEARANCE_TWO_BOT);
+    timerRunBot_2->setObjectName(OBJ_NAME_BOT_2);
+
+    timerRunBot_3->start(CNT_TIME_APPEARANCE_THREE_BOT);
+    timerRunBot_3->setObjectName(OBJ_NAME_BOT_3);
+
+    timerRunBot_4->start(CNT_TIME_APPEARANCE_FOUR_BOT);
+    timerRunBot_4->setObjectName(OBJ_NAME_BOT_4);
+
+    bot->indexWay  = 0;
+    bot->countStep = 0;
+    bot->searchWay = false;
+    bot->setPos(-32, 0);
+    bot->addTank = false;
+    bot->setData(0, OBJ_NAME_BOT_1);
+    bot->setObjectName(OBJ_NAME_BOT_1);
+    bot->setZValue(0.5);
+    this->addItem(bot);
+
+    bot_2->indexWay  = 0;
+    bot_2->countStep = 0;
+    bot_2->searchWay = false;
+    bot_2->setPos(-32, 0);
+    bot_2->addTank = false;
+    bot_2->setData(0, OBJ_NAME_BOT_2);
+    bot_2->setObjectName(OBJ_NAME_BOT_2);
+    bot_2->setZValue(0.5);
+    this->addItem(bot_2);
+
+    bot_3->indexWay  = 0;
+    bot_3->countStep = 0;
+    bot_3->searchWay = false;
+    bot_3->setPos(-32, 0);
+    bot_3->addTank = false;
+    bot_3->setData(0, OBJ_NAME_BOT_3);
+    bot_3->setObjectName(OBJ_NAME_BOT_3);
+    bot_3->setZValue(0.5);
+    this->addItem(bot_3);
+
+    bot_4->indexWay  = 0;
+    bot_4->countStep = 0;
+    bot_4->searchWay = false;
+    bot_4->setPos(-32, 0);
+    bot_4->addTank = false;
+    bot_4->setData(0, OBJ_NAME_BOT_4);
+    bot_4->setObjectName(OBJ_NAME_BOT_4);
+    bot_4->setZValue(0.5);
+    this->addItem(bot_4);
+
+    bot->numberDeaths = 0;
+    bot_2->numberDeaths = 0;
+    bot_3->numberDeaths = 0;
+    bot_4->numberDeaths = 0;
+
+    runOneBot   = false;
+    runTwoBot   = false;
+    runThreeBot = false;
+    runFourBot  = false;
+
+    CNT_SPEED_MOVE_BOTS -= 10;
+
+    TankForPlay1->setPos(CNT_BEGIN_X_ONE_PLAYER, CNT_BEGIN_Y_ONE_PLAYER);
+    timerMoveTank1->start(CNT_SPEED_MOVE_ONE_PLAYER);
+    timerMoveTank1->setObjectName(OBJ_NAME_PLAYER_1);
+    this->addItem(TankForPlay1);                                            // Добавлення на сцену
 }
 
 void BattleCityMap::slotRunOneBot()
@@ -803,25 +876,58 @@ void BattleCityMap::slotAddBot_2()
     ++m_iCountDeath;
     ++bot_2->numberDeaths;
 
-    if (/*bot->numberDeaths == 3 &&*/ m_iCountDeath == 4)
+    int f_icountDeathForNextLevel;
+    int f_icountLifeBot;
+
+    switch(m_iCountLevel)
     {
+        case 1:
+             {
+                f_icountDeathForNextLevel = 4;
+                f_icountLifeBot = 1;
+              break;
+             }
+        case 2:
+             {
+                f_icountDeathForNextLevel = 8;
+                f_icountLifeBot = 2;
+              break;
+             }
+        case 3:
+             {
+                f_icountDeathForNextLevel = 12;
+                f_icountLifeBot = 3;
+              break;
+             }
+        case 4:
+             {
+                f_icountDeathForNextLevel = 16;
+                f_icountLifeBot = 4;
+              break;
+             }
+    }
+
+    if (bot_2->numberDeaths == f_icountLifeBot && m_iCountDeath == f_icountDeathForNextLevel)
+    {
+        timerMoveTank1->stop();
+
         timerMoveBot->stop();
         timerMoveBot_2->stop();
         timerMoveBot_3->stop();
         timerMoveBot_4->stop();
+        timerRunBot->stop();
+        timerRunBot_2->stop();
+        timerRunBot_3->stop();
+        timerRunBot_4->stop();
 
-        bot->setPos(-32,0);
-        bot_2->setPos(-32,0);
-        bot_3->setPos(-32,0);
-        bot_4->setPos(-32,0);
-
-        emit signalLoadNextLevel();
+        timerShowNextLevel->start(5000);
 
         return;
     }
-    else if (bot_2->numberDeaths == 3)
+    else if (bot_2->numberDeaths == f_icountLifeBot)
     {
         timerMoveBot_2->stop();
+
         return;
     }
 
@@ -830,7 +936,7 @@ void BattleCityMap::slotAddBot_2()
     QRectF myRect;
     myRect.setX(_x);
     myRect.setY(0);
-    myRect.setWidth(64);
+    myRect.setWidth(32);
     myRect.setHeight(30);
 
     do
@@ -862,25 +968,58 @@ void BattleCityMap::slotAddBot_3()
     ++m_iCountDeath;
     ++bot_3->numberDeaths;
 
-    if (/*bot->numberDeaths == 3 &&*/ m_iCountDeath == 4)
+    int f_icountDeathForNextLevel;
+    int f_icountLifeBot;
+
+    switch(m_iCountLevel)
     {
+        case 1:
+             {
+                f_icountDeathForNextLevel = 4;
+                f_icountLifeBot = 1;
+              break;
+             }
+        case 2:
+             {
+                f_icountDeathForNextLevel = 8;
+                f_icountLifeBot = 2;
+              break;
+             }
+        case 3:
+             {
+                f_icountDeathForNextLevel = 12;
+                f_icountLifeBot = 3;
+              break;
+             }
+        case 4:
+             {
+                f_icountDeathForNextLevel = 16;
+                f_icountLifeBot = 4;
+              break;
+             }
+    }
+
+    if (bot_3->numberDeaths == f_icountLifeBot && m_iCountDeath == f_icountDeathForNextLevel)
+    {
+        timerMoveTank1->stop();
+
         timerMoveBot->stop();
         timerMoveBot_2->stop();
         timerMoveBot_3->stop();
         timerMoveBot_4->stop();
+        timerRunBot->stop();
+        timerRunBot_2->stop();
+        timerRunBot_3->stop();
+        timerRunBot_4->stop();
 
-        bot->setPos(-32,0);
-        bot_2->setPos(-32,0);
-        bot_3->setPos(-32,0);
-        bot_4->setPos(-32,0);
-
-        emit signalLoadNextLevel();
+        timerShowNextLevel->start(5000);
 
         return;
     }
-    else if (bot_3->numberDeaths == 3)
+    else if (bot_3->numberDeaths == f_icountLifeBot)
     {
         timerMoveBot_3->stop();
+
         return;
     }
 
@@ -893,7 +1032,7 @@ void BattleCityMap::slotAddBot_3()
     QRectF myRect;
     myRect.setX(_x);
     myRect.setY(0);
-    myRect.setWidth(64);
+    myRect.setWidth(32);
     myRect.setHeight(30);
 
     do
@@ -924,25 +1063,58 @@ void BattleCityMap::slotAddBot_4()
     ++m_iCountDeath;
     ++bot_4->numberDeaths;
 
-    if (/*bot->numberDeaths == 3 &&*/ m_iCountDeath == 4)
+    int f_icountDeathForNextLevel;
+    int f_icountLifeBot;
+
+    switch(m_iCountLevel)
     {
+        case 1:
+             {
+                f_icountDeathForNextLevel = 4;
+                f_icountLifeBot = 1;
+              break;
+             }
+        case 2:
+             {
+                f_icountDeathForNextLevel = 8;
+                f_icountLifeBot = 2;
+              break;
+             }
+        case 3:
+             {
+                f_icountDeathForNextLevel = 12;
+                f_icountLifeBot = 3;
+              break;
+             }
+        case 4:
+             {
+                f_icountDeathForNextLevel = 16;
+                f_icountLifeBot = 4;
+              break;
+             }
+    }
+
+    if (bot_4->numberDeaths == f_icountLifeBot && m_iCountDeath == f_icountDeathForNextLevel)
+    {
+        timerMoveTank1->stop();
+
         timerMoveBot->stop();
         timerMoveBot_2->stop();
         timerMoveBot_3->stop();
         timerMoveBot_4->stop();
+        timerRunBot->stop();
+        timerRunBot_2->stop();
+        timerRunBot_3->stop();
+        timerRunBot_4->stop();
 
-        bot->setPos(-32,0);
-        bot_2->setPos(-32,0);
-        bot_3->setPos(-32,0);
-        bot_4->setPos(-32,0);
-
-        emit signalLoadNextLevel();
+        timerShowNextLevel->start(5000);
 
         return;
     }
-    else if (bot_4->numberDeaths == 3)
+    else if (bot_4->numberDeaths == f_icountLifeBot)
     {
         timerMoveBot_4->stop();
+
         return;
     }
 
@@ -955,7 +1127,7 @@ void BattleCityMap::slotAddBot_4()
     QRectF myRect;
     myRect.setX(_x);
     myRect.setY(0);
-    myRect.setWidth(64);
+    myRect.setWidth(32);
     myRect.setHeight(30);
 
     do
@@ -986,8 +1158,41 @@ void BattleCityMap::slotAddBot_1()
     ++m_iCountDeath;
     ++bot->numberDeaths;
 
-    if (/*bot->numberDeaths == 3 &&*/ m_iCountDeath == 1)
+    int f_icountDeathForNextLevel;
+    int f_icountLifeBot;
+
+    switch(m_iCountLevel)
     {
+        case 1:
+             {
+                f_icountDeathForNextLevel = 4;
+                f_icountLifeBot = 1;
+              break;
+             }
+        case 2:
+             {
+                f_icountDeathForNextLevel = 8;
+                f_icountLifeBot = 2;
+              break;
+             }
+        case 3:
+             {
+                f_icountDeathForNextLevel = 12;
+                f_icountLifeBot = 3;
+              break;
+             }
+        case 4:
+             {
+                f_icountDeathForNextLevel = 16;
+                f_icountLifeBot = 4;
+              break;
+             }
+    }
+
+    if (bot->numberDeaths == f_icountLifeBot /*&& m_iCountDeath == f_icountDeathForNextLevel*/)
+    {
+        timerMoveTank1->stop();
+
         timerMoveBot->stop();
         timerMoveBot_2->stop();
         timerMoveBot_3->stop();
@@ -997,25 +1202,14 @@ void BattleCityMap::slotAddBot_1()
         timerRunBot_3->stop();
         timerRunBot_4->stop();
 
-
-        /*bot->setPos(-32,0);
-
-        bot_2->setPos(-32,0);
-        bot_3->setPos(-32,0);
-        bot_4->setPos(-32,0);
-        */
-
-     //   bot->~QGraphicsItem();
-
         timerShowNextLevel->start(5000);
-
-     //   emit signalLoadNextLevel();
 
         return;
     }
-    else if (bot->numberDeaths == 3)
+    else if (bot->numberDeaths == f_icountLifeBot)
     {
         timerMoveBot->stop();
+
         return;
     }
 
@@ -1024,7 +1218,7 @@ void BattleCityMap::slotAddBot_1()
     QRectF myRect;
     myRect.setX(_x);
     myRect.setY(0);
-    myRect.setWidth(64);
+    myRect.setWidth(32);
     myRect.setHeight(30);
 
     do
