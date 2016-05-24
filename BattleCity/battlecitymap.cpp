@@ -8,12 +8,16 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QTime>
+#include <QEventLoop>
 
 BattleCityMap::BattleCityMap(int regimeGame, bool _friend, UdpClient* client, QObject* parent) : QGraphicsScene(parent)
 {
     m_blShowNameLevel = true;
 
-    this->setBackgroundBrush(Qt::black);                        // Встановлення фонового кольору
+    m_iCountDeath = 0;
+    m_iCountLevel = 1;
+
+    this->setBackgroundBrush(Qt::black);                            // Встановлення фонового кольору
     this->setSceneRect(0, 0, WINDOW_WIDTH+100, WINDOW_HEIGHT);      // Встановлення розміру сцени з початковими координатами 0,0
     // вверху лівої частини вікна
 
@@ -25,7 +29,7 @@ BattleCityMap::BattleCityMap(int regimeGame, bool _friend, UdpClient* client, QO
     _deleteBase = false;
 
     p_ReadFromFile = new Parsing();
-    p_ReadFromFile->ParsTextFile(":/map/level_4.txt", n_Map, false);   // Завантаження карти з файлу
+    p_ReadFromFile->ParsTextFile(":/map/level_1.txt", n_Map, false);   // Завантаження карти з файлу
 
     m_listFileNamesEasyBots
             << ":/easyTanks/Tanks/tankBots/easyTank/down_1.png"
@@ -97,6 +101,8 @@ BattleCityMap::BattleCityMap(int regimeGame, bool _friend, UdpClient* client, QO
     timerMoveBot_3  = new QTimer(this);
     timerMoveBot_4  = new QTimer(this);
     timerMoveBots   = new QTimer(this);
+
+    timerShowNextLevel = new QTimer(this);
 
     runOneBot   = false;
     runTwoBot   = false;
@@ -368,6 +374,8 @@ BattleCityMap::BattleCityMap(int regimeGame, bool _friend, UdpClient* client, QO
     QObject::connect( bot_2       , SIGNAL( signalGameOver2()    ), this, SLOT( slotGameOver()    ));   // уничтожение базы
     QObject::connect( bot_3       , SIGNAL( signalGameOver2()    ), this, SLOT( slotGameOver()    ));   // уничтожение базы
     QObject::connect( bot_4       , SIGNAL( signalGameOver2()    ), this, SLOT( slotGameOver()    ));   // уничтожение базы
+
+   // QObject::connect( timerShowNextLevel, SIGNAL(timeout()), this, SLOT(slotLoadNextLevel()));
 
    // QObject::connect( timerForSendPosPlayer , SIGNAL( timeout()), this, SLOT( slotSetPosPlayerForSend() ));
 
@@ -792,22 +800,30 @@ void BattleCityMap::slotAddBot_2()
 {
     emit signalKillBotForStatistic();
 
+    ++m_iCountDeath;
     ++bot_2->numberDeaths;
 
-    if (bot_2->numberDeaths == 3)
+    if (/*bot->numberDeaths == 3 &&*/ m_iCountDeath == 4)
+    {
+        timerMoveBot->stop();
+        timerMoveBot_2->stop();
+        timerMoveBot_3->stop();
+        timerMoveBot_4->stop();
+
+        bot->setPos(-32,0);
+        bot_2->setPos(-32,0);
+        bot_3->setPos(-32,0);
+        bot_4->setPos(-32,0);
+
+        emit signalLoadNextLevel();
+
+        return;
+    }
+    else if (bot_2->numberDeaths == 3)
     {
         timerMoveBot_2->stop();
         return;
     }
-
-//    if (bot_2->numberDeaths == 1)
-//    {
-//        bot_2->LoadNewFrame(m_listFileNamesMiddleBots);
-//    }
-//    else if (bot_2->numberDeaths == 2)
-//    {
-//        bot_2->LoadNewFrame(m_listFileNamesHighBots);
-//    }
 
     QList <QGraphicsItem *> listItems;
     int _x = 0;
@@ -824,10 +840,11 @@ void BattleCityMap::slotAddBot_2()
         _x += 32;
         listItems = this->items(myRect, Qt::IntersectsItemBoundingRect);
 
-        if (_x <= 120)
+        if (_x > 480)
         {
             _x = 0;
         }
+
     } while(listItems.size() != 0);
 
     bot_2->setPos(_x, 0);
@@ -842,132 +859,37 @@ void BattleCityMap::slotAddBot_3()
 {
     emit signalKillBotForStatistic();
 
+    ++m_iCountDeath;
     ++bot_3->numberDeaths;
 
-    if (bot_3->numberDeaths == 3)
+    if (/*bot->numberDeaths == 3 &&*/ m_iCountDeath == 4)
+    {
+        timerMoveBot->stop();
+        timerMoveBot_2->stop();
+        timerMoveBot_3->stop();
+        timerMoveBot_4->stop();
+
+        bot->setPos(-32,0);
+        bot_2->setPos(-32,0);
+        bot_3->setPos(-32,0);
+        bot_4->setPos(-32,0);
+
+        emit signalLoadNextLevel();
+
+        return;
+    }
+    else if (bot_3->numberDeaths == 3)
     {
         timerMoveBot_3->stop();
         return;
     }
-
-//    if (bot_3->numberDeaths == 1)
-//    {
-//        bot_3->LoadNewFrame(m_listFileNamesMiddleBots);
-//    }
-//    else if (bot_3->numberDeaths == 2)
-//    {
-//        bot_3->LoadNewFrame(m_listFileNamesHighBots);
-//    }
 
     bot_3->indexWay = 0;
 
     qsrand(QTime::currentTime().msec());
 
     QList <QGraphicsItem *> listItems;
-    int _x = 120;
-    QRectF myRect;
-    myRect.setX(_x);
-    myRect.setY(0);
-    myRect.setWidth(64);
-    myRect.setHeight(30);
-
-    do
-    {
-        listItems.clear();
-        myRect.setX(_x);
-        _x += 32;
-        listItems = this->items(myRect, Qt::IntersectsItemBoundingRect);
-
-        if (_x >= 240)
-        {
-            _x = 120;
-        }
-    } while(listItems.size() != 0);
-
-    bot_3->setPos(_x, 0);
-    bot_3->setData(0, OBJ_NAME_BOT_3);
-    bot_3->setObjectName(OBJ_NAME_BOT_3);
-    bot_3->setZValue(0.5);
-    this->addItem(bot_3);
-}
-
-void BattleCityMap::slotAddBot_4()
-{
-    emit signalKillBotForStatistic();
-
-    ++bot_4->numberDeaths;
-
-    if (bot_4->numberDeaths == 3)
-    {
-        timerMoveBot_4->stop();
-        return;
-    }
-
-//    if (bot_4->numberDeaths == 1)
-//    {
-//        bot_4->LoadNewFrame(m_listFileNamesMiddleBots);
-//    }
-//    else if (bot_4->numberDeaths == 2)
-//    {
-//        bot_4->LoadNewFrame(m_listFileNamesHighBots);
-//    }
-
-    bot_4->indexWay = 0;
-
-    qsrand(QTime::currentTime().msec());
-
-    QList <QGraphicsItem *> listItems;
-    int _x = 240;
-    QRectF myRect;
-    myRect.setX(_x);
-    myRect.setY(0);
-    myRect.setWidth(64);
-    myRect.setHeight(30);
-
-    do
-    {
-        listItems.clear();
-        myRect.setX(_x);
-        _x += 32;
-        listItems = this->items(myRect, Qt::IntersectsItemBoundingRect);
-
-        if (_x >= 360)
-        {
-            _x = 240;
-        }
-    } while(listItems.size() != 0);
-
-    bot_4->setPos(_x, 0);
-    bot_4->setData(0, OBJ_NAME_BOT_4);
-    bot_4->setObjectName(OBJ_NAME_BOT_4);
-    bot_4->setZValue(0.5);
-    this->addItem(bot_4);
-}
-
-void BattleCityMap::slotAddBot_1()
-{
-
-    emit signalKillBotForStatistic();
-
-    ++bot->numberDeaths;
-
-    if (bot->numberDeaths == 3)
-    {
-        timerMoveBot->stop();
-        return;
-    }
-
-//    if (bot->numberDeaths == 1)
-//    {
-//        bot->LoadNewFrame(m_listFileNamesMiddleBots);
-//    }
-//    else if (bot->numberDeaths == 2)
-//    {
-//        bot->LoadNewFrame(m_listFileNamesHighBots);
-//    }
-
-    QList <QGraphicsItem *> listItems;
-    int _x = 360;
+    int _x = 0;
     QRectF myRect;
     myRect.setX(_x);
     myRect.setY(0);
@@ -983,7 +905,138 @@ void BattleCityMap::slotAddBot_1()
 
         if (_x > 480)
         {
-            _x = 360;
+            _x = 0;
+        }
+
+    } while(listItems.size() != 0);
+
+    bot_3->setPos(_x, 0);
+    bot_3->setData(0, OBJ_NAME_BOT_3);
+    bot_3->setObjectName(OBJ_NAME_BOT_3);
+    bot_3->setZValue(0.5);
+    this->addItem(bot_3);
+}
+
+void BattleCityMap::slotAddBot_4()
+{
+    emit signalKillBotForStatistic();
+
+    ++m_iCountDeath;
+    ++bot_4->numberDeaths;
+
+    if (/*bot->numberDeaths == 3 &&*/ m_iCountDeath == 4)
+    {
+        timerMoveBot->stop();
+        timerMoveBot_2->stop();
+        timerMoveBot_3->stop();
+        timerMoveBot_4->stop();
+
+        bot->setPos(-32,0);
+        bot_2->setPos(-32,0);
+        bot_3->setPos(-32,0);
+        bot_4->setPos(-32,0);
+
+        emit signalLoadNextLevel();
+
+        return;
+    }
+    else if (bot_4->numberDeaths == 3)
+    {
+        timerMoveBot_4->stop();
+        return;
+    }
+
+    bot_4->indexWay = 0;
+
+    qsrand(QTime::currentTime().msec());
+
+    QList <QGraphicsItem *> listItems;
+    int _x = 0;
+    QRectF myRect;
+    myRect.setX(_x);
+    myRect.setY(0);
+    myRect.setWidth(64);
+    myRect.setHeight(30);
+
+    do
+    {
+        listItems.clear();
+        myRect.setX(_x);
+        _x += 32;
+        listItems = this->items(myRect, Qt::IntersectsItemBoundingRect);
+
+        if (_x > 480)
+        {
+            _x = 0;
+        }
+
+    } while(listItems.size() != 0);
+
+    bot_4->setPos(_x, 0);
+    bot_4->setData(0, OBJ_NAME_BOT_4);
+    bot_4->setObjectName(OBJ_NAME_BOT_4);
+    bot_4->setZValue(0.5);
+    this->addItem(bot_4);
+}
+
+void BattleCityMap::slotAddBot_1()
+{
+    emit signalKillBotForStatistic();
+
+    ++m_iCountDeath;
+    ++bot->numberDeaths;
+
+    if (/*bot->numberDeaths == 3 &&*/ m_iCountDeath == 1)
+    {
+        timerMoveBot->stop();
+        timerMoveBot_2->stop();
+        timerMoveBot_3->stop();
+        timerMoveBot_4->stop();
+        timerRunBot->stop();
+        timerRunBot_2->stop();
+        timerRunBot_3->stop();
+        timerRunBot_4->stop();
+
+
+        /*bot->setPos(-32,0);
+
+        bot_2->setPos(-32,0);
+        bot_3->setPos(-32,0);
+        bot_4->setPos(-32,0);
+        */
+
+     //   bot->~QGraphicsItem();
+
+        timerShowNextLevel->start(5000);
+
+     //   emit signalLoadNextLevel();
+
+        return;
+    }
+    else if (bot->numberDeaths == 3)
+    {
+        timerMoveBot->stop();
+        return;
+    }
+
+    QList <QGraphicsItem *> listItems;
+    int _x = 0;
+    QRectF myRect;
+    myRect.setX(_x);
+    myRect.setY(0);
+    myRect.setWidth(64);
+    myRect.setHeight(30);
+
+    do
+    {
+        listItems.clear();
+        myRect.setX(_x);
+        _x += 32;
+        listItems = this->items(myRect, Qt::IntersectsItemBoundingRect);
+
+        if (_x > 480)
+        {
+            _x = 0;
         }
 
     } while(listItems.size() != 0);

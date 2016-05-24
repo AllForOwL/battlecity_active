@@ -27,6 +27,9 @@ public:
 
     bool AuditPressKey(int key);
 
+    int m_iCountDeath;
+    int m_iCountLevel;
+
     int  _regimeGame;
     bool _deleteBase;
 
@@ -55,6 +58,8 @@ public:
 
     QTimer* timerForShowExplosionBonus;
     QTimer* timerRemoveExplosionBonus;
+
+    QTimer* timerShowNextLevel;
 
     TankForPlayer* TankForPlay1;            // Танк первого и
     TankForPlayer* TankForPlay2;            // в второго игрока
@@ -129,7 +134,7 @@ signals:
 
     void signalKillBotForStatistic();
 
-    void signalShowNextLevel();
+    void signalLoadNextLevel();
 
     void signalKillTankForStatistic();
 
@@ -169,7 +174,6 @@ public slots:
     void slotShotTank(QString str);
 
     void slotKillTank();
-
 };
 
 #endif // BATTLECITYMAP_H

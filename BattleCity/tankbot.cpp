@@ -12,6 +12,7 @@ using namespace std;
 TankBot::TankBot(const QList<QString> fileNames): Tank(fileNames)
 {
     setRotate(270);
+    deleteBullet = false;
     searchWay = false;
     indexWay  = 0;
     addTank = false;

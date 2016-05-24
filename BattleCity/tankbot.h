@@ -31,6 +31,8 @@ public:
     ~TankBot();
 
 public:
+
+    bool deleteBullet;
     int  map[CNT_ROWS_MAP][CNT_COLS_MAP];
     void outMap();
 

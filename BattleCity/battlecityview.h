@@ -36,6 +36,7 @@ public slots:
     void slotKillBotStatistic();
     void slotKillTankStatistic();
 
+    void slotLoadNextLevel();
 };
 
 #endif // BATTLECITYVIEW_H

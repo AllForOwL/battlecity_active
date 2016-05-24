@@ -18,6 +18,7 @@ public:
     algorithmLI();
 
 public:
+    QString PATH_TO_MAP_FOR_LEVEL;
     int _begin_x;
     int _begin_y;
     int _end_x;
@@ -39,6 +40,7 @@ public:
     bool PassableElement(int x, int y);
     bool PassableElementMoreThree(int i, int _i);
     bool PassableElementLessThree(int i, int _i);
+    void SetPathToMap(const QString& pathToFile);
 };
 
 #endif // ALGORITHMLI_H

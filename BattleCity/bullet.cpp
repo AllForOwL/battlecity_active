@@ -7,12 +7,13 @@
 #include "sprite.h"
 #include <QMessageBox>
 #include <QException>
+#include <signal.h>
 
 Bullet::Bullet(int tempPowerTank, QPointF start, int angle, QObject *parent):  QObject(parent),
                                                             QGraphicsItem()
 {
     powerTank = tempPowerTank;
-    _speed = -2;                                                    // Швидкість руху пулі
+    _speed = -1;                                                    // Швидкість руху пулі
     this->setRotation(angle);                                       // Сторона польоту
     this->setPos(start);                                            // Початкова позиції пулі
     timerBullet = new QTimer();
@@ -49,7 +50,9 @@ void Bullet::slotTimerBullet() {
     int y = this->y();
 
     QList<QGraphicsItem *> array = scene()->collidingItems(this);   // В array містяться об’єкти
-                                                                    // з якими зіткнулася пуля
+
+
+        // з якими зіткнулася пуля
     QPointF point(x, y);
     QRectF  tankExplosionF  (-25, -25, 50, 50);
     QRectF  baseExplosionF  (-20, -20, 40, 40);
@@ -197,9 +200,11 @@ void Bullet::slotTimerBullet() {
                 rw->setPos(-32, 0);
                 rw->destroyed();
 
-                continue;
+                break;
             }
+
 }
+
     }
     else if (
             x < 0   || x > WINDOW_WIDTH ||  // Якщо поля виходить
